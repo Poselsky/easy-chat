@@ -8,9 +8,7 @@
              x:Class="easychat.Views.Pages.GroupPage">
 
     <StackLayout>
-        <StackLayout x:Name="Responses">
-            <group:Group x:Name="group" Command="{Binding Command, Mode=TwoWay}"/>
-        </StackLayout>
+        <StackLayout x:Name="Responses" />
         <Button Text="Create New group"></Button>
     </StackLayout>
 

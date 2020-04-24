@@ -9,6 +9,9 @@ using Firebase.Database;
 using Firebase.Database.Query;
 using System.Diagnostics;
 using Xamarin.Forms.Xaml;
+using Xamarin.Forms.Internals;
+using Newtonsoft.Json;
+using easychat.Views.Components;
 
 namespace easychat.Views.Pages
 {
@@ -52,6 +55,19 @@ namespace easychat.Views.Pages
                 Debug.WriteLine(obj);
                 await App.MasterDetailPage.ChangeDetailPage(typeof(GroupDetailPage));
             });
+            GetAllGroups();
+        }
+
+        public async void GetAllGroups()
+        {
+            var all = await Firebase.Child("groups").OnceAsync<MessageGroup>();
+            all.ForEach(group => {
+                var singleGroup = new Group();
+                singleGroup.Name = group.Object.GroupName;
+                singleGroup.Command = this.Command;
+                this.Responses.Children.Add(singleGroup);
+                Debug.WriteLine(group.Object.GroupName);
+            });
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -74,6 +90,16 @@ namespace easychat.Views.Pages
         public Message(string input)
         {
             this.Input = input;
+        }
+    }
+
+    public class MessageGroup
+    {
+        [JsonProperty("name")]
+        public string GroupName { get; set; }
+        public MessageGroup(string GroupName)
+        {
+            this.GroupName = GroupName;
         }
     }
 }
