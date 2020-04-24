@@ -8,6 +8,8 @@
              x:Name="this">
     <ContentView.Content>
         <Grid
+            x:Name="Main"
+            HeightRequest="100"
             MinimumHeightRequest="100"
             BindingContext="{Binding Source={x:Reference this}}">
             <Grid.ColumnDefinitions>

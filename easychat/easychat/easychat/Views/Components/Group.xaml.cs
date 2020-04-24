@@ -29,15 +29,17 @@ namespace easychat.Views.Components
             set
             {
                 SetValue(CommandProperty, value);
+                Main.GestureRecognizers.Clear();
                 var tap = new TapGestureRecognizer();
                 tap.Tapped += (s, e) =>
                 {
-                    value.Execute(s);
+                    value.Execute(new PagePropagationInfo(Name,Key));
                 };
-                this.GestureRecognizers.Add(tap);
+                Main.GestureRecognizers.Add(tap);
             }
         }
 
+        public string Key;
         public string Name
         {
             get => (string)GetValue(NameProperty);
@@ -51,14 +53,16 @@ namespace easychat.Views.Components
         {
             InitializeComponent();
         }
+    }
 
-        #region propertyChanged section
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+    public class PagePropagationInfo
+    {
+        public string PageName;
+        public string KeyPage;
+        public PagePropagationInfo(string PageName, string KeyPage)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.KeyPage = KeyPage;
+            this.PageName = PageName;
         }
-        #endregion
-
     }
 }
