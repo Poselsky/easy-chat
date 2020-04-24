@@ -10,7 +10,7 @@ namespace easychat
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new MainMasterDetailPage();
         }
 
         protected override void OnStart()
