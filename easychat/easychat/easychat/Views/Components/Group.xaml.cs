@@ -13,13 +13,15 @@ namespace easychat.Views.Components
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     [DesignTimeVisible(true)]
-    public partial class Group : ContentView
+    public partial class Group : ContentView, INotifyPropertyChanged
     {
         public static readonly BindableProperty CommandProperty = BindableProperty.Create(nameof(Command), typeof(ICommand), typeof(Group), null,
             propertyChanged: (BindableObject bindable, object oldValue, object newValue) =>
             {
                 ((Group)bindable).Command = (ICommand)newValue;
             });
+
+        public static readonly BindableProperty NameProperty = BindableProperty.Create(nameof(Name), typeof(string), typeof(Group), null);
 
         public ICommand Command
         {
@@ -36,10 +38,27 @@ namespace easychat.Views.Components
             }
         }
 
+        public string Name
+        {
+            get => (string)GetValue(NameProperty);
+            set
+            {
+                SetValue(NameProperty, value);
+            }
+        } 
+
         public Group()
         {
             InitializeComponent();
         }
+
+        #region propertyChanged section
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
 
     }
 }

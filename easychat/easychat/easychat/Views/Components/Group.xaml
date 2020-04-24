@@ -23,7 +23,7 @@
                 Margin="10"
                 VerticalTextAlignment="Center"
                 HorizontalTextAlignment="Center"
-                Text="Group name"/>
+                Text="{Binding Name}"/>
         </Grid>
     </ContentView.Content>
 </ContentView>
