@@ -1,4 +1,6 @@
-﻿using System;
+﻿using easychat.Views.Components;
+using easychat.Views.Pages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,10 +35,12 @@ namespace easychat
             MasterPage.ListView.SelectedItem = null;
         }
 
-        public async Task ChangeDetailPage(Type TargetType)
+        public async Task ChangeDetailPage(Type TargetType, PagePropagationInfo pagePropagationInfo)
         {
-            var page = (Page)Activator.CreateInstance(TargetType);
+            var page = (GroupDetailPage)Activator.CreateInstance(TargetType);
             page.Title = "Test";
+            page.GroupName = pagePropagationInfo.PageName;
+
 
             await ((NavigationPage)Detail).Navigation.PushAsync(page);
             IsPresented = false;
