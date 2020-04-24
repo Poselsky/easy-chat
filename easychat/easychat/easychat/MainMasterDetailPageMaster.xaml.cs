@@ -1,4 +1,5 @@
-﻿using System;
+﻿using easychat.Views.Pages;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -34,7 +35,7 @@ namespace easychat
                 MenuItems = new ObservableCollection<MainMasterDetailPageMasterMenuItem>(new[]
                 {
                     new MainMasterDetailPageMasterMenuItem { Id = 0, Title = "Groups", TargetType = typeof(GroupPage) },
-                    new MainMasterDetailPageMasterMenuItem { Id = 1, Title = "Settings", TargetType = typeof(GroupPage) },
+                    new MainMasterDetailPageMasterMenuItem { Id = 1, Title = "Settings", TargetType = typeof(SettingsPage) },
                 });
             }
 

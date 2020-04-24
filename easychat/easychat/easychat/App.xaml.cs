@@ -6,11 +6,13 @@ namespace easychat
 {
     public partial class App : Application
     {
+        public static MainMasterDetailPage MasterDetailPage { get; private set; }
         public App()
         {
             InitializeComponent();
-
-            MainPage = new MainMasterDetailPage();
+            var main = new MainMasterDetailPage();
+            MainPage = main;
+            MasterDetailPage = main;
         }
 
         protected override void OnStart()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using easychat.Views.Pages;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;

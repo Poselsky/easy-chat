@@ -32,5 +32,16 @@ namespace easychat
 
             MasterPage.ListView.SelectedItem = null;
         }
+
+        public async Task ChangeDetailPage(Type TargetType)
+        {
+            var page = (Page)Activator.CreateInstance(TargetType);
+            page.Title = "Test";
+
+            await ((NavigationPage)Detail).Navigation.PushAsync(page);
+            IsPresented = false;
+
+            MasterPage.ListView.SelectedItem = null;
+        }
     }
 }

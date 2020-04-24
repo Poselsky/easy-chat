@@ -48,8 +48,9 @@ namespace easychat.Views.Pages
             BindingContext = this;
             Input = "FUU";
             Firebase = new FirebaseClient("https://easychat-3685d.firebaseio.com");
-            Command = new Command((obj) => {
-                Debug.WriteLine(obj); 
+            Command = new Command(async (obj) => {
+                Debug.WriteLine(obj);
+                await App.MasterDetailPage.ChangeDetailPage(typeof(GroupDetailPage));
             });
         }
 
@@ -58,11 +59,13 @@ namespace easychat.Views.Pages
             await Firebase.Child("messages").PostAsync<Message>(new Message(this.Input));
         }
 
+        #region propertyChanged section
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
     }
 
     public class Message
