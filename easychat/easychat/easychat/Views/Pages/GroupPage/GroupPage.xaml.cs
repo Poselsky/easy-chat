@@ -12,6 +12,9 @@ using Xamarin.Forms.Xaml;
 using Xamarin.Forms.Internals;
 using Newtonsoft.Json;
 using easychat.Views.Components;
+using System.Reactive.Linq;
+using System.Threading;
+using Newtonsoft.Json.Linq;
 
 namespace easychat.Views.Pages
 {
@@ -43,36 +46,63 @@ namespace easychat.Views.Pages
             }
         }  
 
-        private FirebaseClient Firebase;
+        private FirebaseClient FirebaseCli;
 
         public GroupPage()
         {
             InitializeComponent();
             BindingContext = this;
             Input = "FUU";
-            Firebase = new FirebaseClient("https://easychat-3685d.firebaseio.com");
+            FirebaseCli = new FirebaseClient("https://easychat-3685d.firebaseio.com");
             Command = new Command(async (obj) => {
                 Debug.WriteLine(obj);
-                await App.MasterDetailPage.ChangeDetailPage(typeof(GroupDetailPage));
+                await App.MasterDetailPage.ChangeDetailPage(typeof(GroupDetailPage), (PagePropagationInfo)obj);
             });
             GetAllGroups();
         }
 
         public async void GetAllGroups()
         {
-            var all = await Firebase.Child("groups").OnceAsync<MessageGroup>();
-            all.ForEach(group => {
-                var singleGroup = new Group();
-                singleGroup.Name = group.Object.GroupName;
-                singleGroup.Command = this.Command;
-                this.Responses.Children.Add(singleGroup);
-                Debug.WriteLine(group.Object.GroupName);
-            });
+            FirebaseCli.Child("groups").AsObservable<MessageGroup>().Subscribe(
+                onNext: group =>
+                {
+                    var allChildren = this.Responses.Children;
+                    var singleGroup = new Group();
+                    singleGroup.Name = group.Object.GroupName;
+                    singleGroup.Command = this.Command;
+                    singleGroup.Key = group.Key;
+
+                    Group viewInChild;
+                    try
+                    {
+                        viewInChild = (Group)allChildren.First(view => ((Group)view).Key == group.Key);
+                    } catch(Exception e)
+                    {
+                        viewInChild = null;
+                    }
+
+                    Dispatcher.BeginInvokeOnMainThread(() =>
+                    {
+                        switch (group.EventType)
+                        {
+                            case Firebase.Database.Streaming.FirebaseEventType.Delete:
+                                allChildren.Remove(viewInChild);
+                                break;
+                            default:
+                                if (viewInChild == null)
+                                {
+                                    allChildren.Add(singleGroup);
+                                }
+                                break;
+                        }
+                    });
+                }
+            );
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await Firebase.Child("messages").PostAsync<Message>(new Message(this.Input));
+            await FirebaseCli.Child("messages").PostAsync<Message>(new Message(this.Input));
         }
 
         #region propertyChanged section
