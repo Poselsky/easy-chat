@@ -13,17 +13,21 @@ namespace easychat.Views.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GroupDetailPage : ContentPage, INotifyPropertyChanged
     {
-        public GroupDetailPage()
+        public static readonly BindableProperty GroupNameProperty = BindableProperty.Create(nameof(GroupName), typeof(string), typeof(GroupDetailPage), "Anonymous Group", BindingMode.TwoWay);
+
+        public string GroupName
         {
-            InitializeComponent();
+            get => (string)GetValue(GroupNameProperty);
+            set
+            {
+                SetValue(GroupNameProperty, value);
+            }
         }
 
-        #region propertyChanged section
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+        public GroupDetailPage()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            BindingContext = this;
+            InitializeComponent();
         }
-        #endregion
     }
 }

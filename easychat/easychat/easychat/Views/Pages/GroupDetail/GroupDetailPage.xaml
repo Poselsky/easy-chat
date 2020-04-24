@@ -4,10 +4,11 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="easychat.Views.Pages.GroupDetailPage">
+             x:Class="easychat.Views.Pages.GroupDetailPage"
+             x:Name="this">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
+        <StackLayout BindingContext="{Binding Source={x:Reference this}}">
+            <Label Text="{Binding GroupName, Mode=TwoWay}"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
         </StackLayout>
