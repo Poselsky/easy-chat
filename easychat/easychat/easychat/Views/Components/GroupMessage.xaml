@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Grid xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:converters="clr-namespace:easychat.Classes.Converters"
+             x:Class="easychat.Views.Components.GroupMessage"
+             x:Name="this"
+             HeightRequest="{Binding Path=Height,Source={x:Reference MainText}, Converter={StaticResource add80ToHeight}}">
+    <Grid.Resources>
+        <ResourceDictionary>
+            <converters:AddToHeightConverter x:Key="add80ToHeight"/>
+        </ResourceDictionary>
+    </Grid.Resources>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="40"/>
+        <RowDefinition/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="1*"/>
+        <ColumnDefinition Width="9*"/>
+    </Grid.ColumnDefinitions>
+    <Label
+        Grid.Row="0"
+        Grid.Column="1"
+        Padding="20, 0, 0, 0"
+        VerticalOptions="End"
+        Text="{Binding Message.UserName}"/>
+    <AbsoluteLayout
+        BindingContext="{Binding Source={x:Reference this}}"
+        x:Name="MessageLayout"
+        Margin="20, 0"
+        Grid.Row="1"
+        Grid.Column="1">
+        <BoxView
+            x:Name="MainTextBackground"
+            CornerRadius="10"
+            AbsoluteLayout.LayoutBounds="0,0, 1, 1"
+            AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="#80DEFFD4"/>
+        <Label
+            x:Name="MainText"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            AbsoluteLayout.LayoutBounds="0, .5"
+            Padding="20,0,0,0"
+            VerticalOptions="Center"
+            Text="{Binding Message.Text}" />
+    </AbsoluteLayout>
+</Grid>

@@ -15,6 +15,8 @@ using easychat.Views.Components;
 using System.Reactive.Linq;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using easychat.Classes;
+using easychat.Model;
 
 namespace easychat.Views.Pages
 {
@@ -24,7 +26,7 @@ namespace easychat.Views.Pages
     [DesignTimeVisible(true)]
     public partial class GroupPage : ContentPage, INotifyPropertyChanged
     {
-        private string _Input = "haha";
+        private string _Input;
         public string Input
         {
             get => _Input;
@@ -46,24 +48,19 @@ namespace easychat.Views.Pages
             }
         }  
 
-        private FirebaseClient FirebaseCli;
-
         public GroupPage()
         {
             InitializeComponent();
             BindingContext = this;
-            Input = "FUU";
-            FirebaseCli = new FirebaseClient("https://easychat-3685d.firebaseio.com");
             Command = new Command(async (obj) => {
-                Debug.WriteLine(obj);
-                await App.MasterDetailPage.ChangeDetailPage(typeof(GroupDetailPage), (PagePropagationInfo)obj);
+                await App.MasterDetailPage.ChangeGroupDetailPage((GroupDetailPagePropagationInfo)obj);
             });
-            GetAllGroups();
+            ListenToFirebaseGroups();
         }
 
-        public async void GetAllGroups()
+        public void ListenToFirebaseGroups()
         {
-            FirebaseCli.Child("groups").AsObservable<MessageGroup>().Subscribe(
+            App.FirebaseClient.Child("groups").AsObservable<MessageGroup>().Subscribe(
                 onNext: group =>
                 {
                     var allChildren = this.Responses.Children;
@@ -102,34 +99,8 @@ namespace easychat.Views.Pages
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await FirebaseCli.Child("messages").PostAsync<Message>(new Message(this.Input));
-        }
-
-        #region propertyChanged section
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
-    }
-
-    public class Message
-    {
-        public string Input;
-        public Message(string input)
-        {
-            this.Input = input;
+            // await App.FirebaseClient.Child("messages").PostAsync<Message>(new Message(this.Input));
         }
     }
 
-    public class MessageGroup
-    {
-        [JsonProperty("name")]
-        public string GroupName { get; set; }
-        public MessageGroup(string GroupName)
-        {
-            this.GroupName = GroupName;
-        }
-    }
 }

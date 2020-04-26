@@ -8,9 +8,9 @@
              x:Name="this">
     <ContentPage.Content>
         <StackLayout BindingContext="{Binding Source={x:Reference this}}">
-            <Label Text="{Binding GroupName, Mode=TwoWay}"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <StackLayout x:Name="FetchedMessages">
+                
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

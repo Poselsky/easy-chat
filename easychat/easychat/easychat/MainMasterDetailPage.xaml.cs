@@ -1,4 +1,5 @@
-﻿using easychat.Views.Components;
+﻿using easychat.Classes;
+using easychat.Views.Components;
 using easychat.Views.Pages;
 using System;
 using System.Collections.Generic;
@@ -35,12 +36,12 @@ namespace easychat
             MasterPage.ListView.SelectedItem = null;
         }
 
-        public async Task ChangeDetailPage(Type TargetType, PagePropagationInfo pagePropagationInfo)
+        public async Task ChangeGroupDetailPage(GroupDetailPagePropagationInfo pagePropagationInfo)
         {
-            var page = (GroupDetailPage)Activator.CreateInstance(TargetType);
-            page.Title = "Test";
-            page.GroupName = pagePropagationInfo.PageName;
-
+            var page = (GroupDetailPage)Activator.CreateInstance(typeof(GroupDetailPage));
+            page.Title = pagePropagationInfo.PageName;
+            page.GroupInfo = pagePropagationInfo;
+            page.ListenToFirebaseGroupMessages();
 
             await ((NavigationPage)Detail).Navigation.PushAsync(page);
             IsPresented = false;
