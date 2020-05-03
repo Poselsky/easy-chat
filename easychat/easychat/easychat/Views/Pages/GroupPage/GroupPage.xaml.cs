@@ -96,11 +96,6 @@ namespace easychat.Views.Pages
                 }
             );
         }
-
-        private async void Button_Clicked(object sender, EventArgs e)
-        {
-            // await App.FirebaseClient.Child("messages").PostAsync<Message>(new Message(this.Input));
-        }
     }
 
 }

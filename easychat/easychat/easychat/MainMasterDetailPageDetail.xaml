@@ -5,8 +5,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="easychat.MainMasterDetailPageDetail"
-             Title="Detail">
-  <StackLayout Padding="10">
-    <Label Text="This is a detail page. To get the 'triple' line icon on each platform add a icon to each platform and update the 'Master' page with an Icon that references it."/>
-  </StackLayout>
+             Title="Detail"
+             x:Name="this">
+    <StackLayout BindingContext="{Binding Source={x:Reference this}}">
+        <Label 
+            Text="User name" 
+            HorizontalOptions="Center"></Label>
+        <Entry
+            HorizontalOptions="FillAndExpand"
+            Text="{Binding DisplayName, Mode=TwoWay}"></Entry>
+        <Label 
+            Text="Email" 
+            HorizontalOptions="Center"></Label>
+        <Entry
+            HorizontalOptions="FillAndExpand"
+            Text="{Binding Email, Mode=TwoWay}"></Entry>
+        <Label 
+            Text="Password" 
+            HorizontalOptions="CenterAndExpand"></Label>
+        <Entry
+            HorizontalOptions="FillAndExpand"
+            Text="{Binding Password, Mode=TwoWay}"
+            IsPassword="True"></Entry>
+        <Button Text="Register" Clicked="Register"></Button>
+        <Button Text="Log In" Clicked="LogIn"></Button>
+    </StackLayout>
 </ContentPage>

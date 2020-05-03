@@ -1,6 +1,7 @@
 ﻿using easychat.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ using Xamarin.Forms.Xaml;
 namespace easychat.Views.Components
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class GroupMessage : Grid
+    public partial class GroupMessage : Grid, INotifyPropertyChanged
     {
         public static readonly BindableProperty MessageProperty = BindableProperty.Create(nameof(Message), typeof(Message), typeof(GroupMessage));
 
@@ -21,6 +22,19 @@ namespace easychat.Views.Components
             set
             {
                 SetValue(MessageProperty, value);
+                if (value != null)
+                    FetchUser();
+            }
+        }
+
+        private User _LinkedToUser;
+        public User LinkedToUser
+        {
+            get => _LinkedToUser;
+            set
+            {
+                this._LinkedToUser = value;
+                OnPropertyChanged(nameof(LinkedToUser));
             }
         }
 
@@ -28,6 +42,11 @@ namespace easychat.Views.Components
         {
             BindingContext = this;
             InitializeComponent();
+        }
+
+        private async void FetchUser()
+        {
+            LinkedToUser = await Message.LinkedToUser();
         }
 
     }
