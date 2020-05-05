@@ -22,19 +22,6 @@ namespace easychat.Views.Components
             set
             {
                 SetValue(MessageProperty, value);
-                if (value != null)
-                    FetchUser();
-            }
-        }
-
-        private User _LinkedToUser;
-        public User LinkedToUser
-        {
-            get => _LinkedToUser;
-            set
-            {
-                this._LinkedToUser = value;
-                OnPropertyChanged(nameof(LinkedToUser));
             }
         }
 
@@ -43,11 +30,5 @@ namespace easychat.Views.Components
             BindingContext = this;
             InitializeComponent();
         }
-
-        private async void FetchUser()
-        {
-            LinkedToUser = await Message.LinkedToUser();
-        }
-
     }
 }

@@ -4,30 +4,75 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:converters="clr-namespace:easychat.Classes.Converters"
              x:Class="easychat.MainMasterDetailPageDetail"
              Title="Detail"
              x:Name="this">
-    <StackLayout BindingContext="{Binding Source={x:Reference this}}">
-        <Label 
-            Text="User name" 
-            HorizontalOptions="Center"></Label>
-        <Entry
-            HorizontalOptions="FillAndExpand"
-            Text="{Binding DisplayName, Mode=TwoWay}"></Entry>
-        <Label 
-            Text="Email" 
-            HorizontalOptions="Center"></Label>
-        <Entry
-            HorizontalOptions="FillAndExpand"
-            Text="{Binding Email, Mode=TwoWay}"></Entry>
-        <Label 
-            Text="Password" 
-            HorizontalOptions="CenterAndExpand"></Label>
-        <Entry
-            HorizontalOptions="FillAndExpand"
-            Text="{Binding Password, Mode=TwoWay}"
-            IsPassword="True"></Entry>
-        <Button Text="Register" Clicked="Register"></Button>
-        <Button Text="Log In" Clicked="LogIn"></Button>
-    </StackLayout>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolNegateConverter x:Key="BoolNegateConverter"></converters:BoolNegateConverter>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout 
+        BindingContext="{Binding Source={x:Reference this}}">
+            <Label
+            IsVisible="{Binding Path=IsLoggedIn, Converter={StaticResource BoolNegateConverter}}"
+            Padding="0 , 20, 0, 0"
+            Text="{Binding AppLogInException}"
+            TextColor="Red"
+            HorizontalOptions="Center">
+            </Label>
+            <StackLayout
+            IsVisible="{Binding Path=IsLoggedIn, Converter={StaticResource BoolNegateConverter}}"
+            Padding="50"
+            Spacing="10">
+                <Label 
+                Text="User name (Fill in if registering)" 
+                HorizontalOptions="Center"></Label>
+                <Entry
+                x:Name="DisplayNameEntry"
+                HorizontalOptions="FillAndExpand"
+                Text="{Binding DisplayName, Mode=TwoWay}"></Entry>
+                <Label 
+                Text="Email" 
+                HorizontalOptions="Center"></Label>
+                <Entry
+                x:Name="EmailEntry"
+                HorizontalOptions="FillAndExpand"
+                Text="{Binding Email, Mode=TwoWay}"></Entry>
+                <Label 
+                Text="Password" 
+                HorizontalOptions="CenterAndExpand"></Label>
+                <Entry
+                x:Name="PasswordEntry"
+                HorizontalOptions="FillAndExpand"
+                Text="{Binding Password, Mode=TwoWay}"
+                IsPassword="True"></Entry>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button 
+                    Grid.Column="0"
+                    Padding="20"
+                    Text="Register"
+                    Clicked="Register"></Button>
+                    <Button 
+                    Grid.Column="1"
+                    Padding="20"
+                    Text="Log In" 
+                    Clicked="LogIn"></Button>
+                </Grid>
+            </StackLayout>
+
+            <Label 
+                Padding="0 , 20, 0, 0"
+                HorizontalOptions="Center"
+                IsVisible="{Binding Path=IsLoggedIn}"
+                TextColor="Green"
+                Text="Logged in succesfully!"/>
+        </StackLayout>
+    </ContentPage.Content>
 </ContentPage>

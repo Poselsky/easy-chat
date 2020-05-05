@@ -23,21 +23,24 @@ namespace easychat
 
         private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            var item = e.SelectedItem as MainMasterDetailPageMasterMenuItem;
-            if (item == null)
-                return;
+            if (ApplicationState.Instance.IsLoggedIn) {
+                var item = e.SelectedItem as MainMasterDetailPageMasterMenuItem;
+                if (item == null)
+                    return;
 
-            var page = (Page)Activator.CreateInstance(item.TargetType);
-            page.Title = item.Title;
+                var page = (Page)Activator.CreateInstance(item.TargetType);
+                page.Title = item.Title;
 
-            Detail = new NavigationPage(page);
-            IsPresented = false;
+                Detail = new NavigationPage(page);
+                IsPresented = false;
 
-            MasterPage.ListView.SelectedItem = null;
+                MasterPage.ListView.SelectedItem = null;
+            }
         }
 
         public async Task ChangeGroupDetailPage(GroupDetailPagePropagationInfo pagePropagationInfo)
         {
+
             var page = (GroupDetailPage)Activator.CreateInstance(typeof(GroupDetailPage));
             page.Title = pagePropagationInfo.PageName;
             page.GroupInfo = pagePropagationInfo;

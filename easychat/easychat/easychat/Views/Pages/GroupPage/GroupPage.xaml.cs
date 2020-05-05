@@ -53,14 +53,16 @@ namespace easychat.Views.Pages
             InitializeComponent();
             BindingContext = this;
             Command = new Command(async (obj) => {
-                await App.MasterDetailPage.ChangeGroupDetailPage((GroupDetailPagePropagationInfo)obj);
+                var propagation = (GroupDetailPagePropagationInfo)obj;
+                ApplicationState.Instance.CurrentlySelectedGroupId = propagation.KeyPage;
+                await App.MasterDetailPage.ChangeGroupDetailPage(propagation);
             });
             ListenToFirebaseGroups();
         }
 
         public void ListenToFirebaseGroups()
         {
-            App.FirebaseClient.Child("groups").AsObservable<MessageGroup>().Subscribe(
+            ApplicationState.FirebaseClient.Child("groups").AsObservable<MessageGroup>().Subscribe(
                 onNext: group =>
                 {
                     var allChildren = this.Responses.Children;
@@ -69,13 +71,15 @@ namespace easychat.Views.Pages
                     singleGroup.Command = this.Command;
                     singleGroup.Key = group.Key;
 
-                    Group viewInChild;
-                    try
+
+                    Group viewInChild = null;
+                    for (int i = 0; i < allChildren.Count; i++)
                     {
-                        viewInChild = (Group)allChildren.First(view => ((Group)view).Key == group.Key);
-                    } catch(Exception e)
-                    {
-                        viewInChild = null;
+                        var temp = (Group)allChildren[i];
+                        if (temp.Key == group.Key)
+                        {
+                            viewInChild = temp;
+                        }
                     }
 
                     Dispatcher.BeginInvokeOnMainThread(() =>

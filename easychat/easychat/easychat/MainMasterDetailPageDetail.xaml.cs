@@ -1,4 +1,6 @@
-﻿using Firebase.Auth;
+﻿using easychat.Classes;
+using easychat.Model;
+using Firebase.Auth;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,8 +16,6 @@ namespace easychat
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainMasterDetailPageDetail : ContentPage, INotifyPropertyChanged
     {
-        private static readonly FirebaseAuthProvider provider = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyCP-y3F1ULt-VOFX0op-skcL1a7m4HyTWI"));
-
         private string _DisplayName;
         public string DisplayName
         {
@@ -49,6 +49,27 @@ namespace easychat
             }
         }
 
+        private string _AppLogInException;
+        public string AppLogInException
+        {
+            get => _AppLogInException;
+            set
+            {
+                _AppLogInException = value;
+                OnPropertyChanged(nameof(AppLogInException));
+            }
+        }
+
+        public bool IsLoggedIn
+        {
+            get => ApplicationState.Instance.IsLoggedIn;
+            set
+            {
+                ApplicationState.Instance.IsLoggedIn = value;
+                OnPropertyChanged(nameof(IsLoggedIn));
+            }
+        }
+
         public MainMasterDetailPageDetail()
         {
             InitializeComponent();
@@ -56,14 +77,53 @@ namespace easychat
 
         private async void Register(object sender, EventArgs e)
         {
-            var res = await provider.CreateUserWithEmailAndPasswordAsync(Email, Password, displayName: DisplayName);
-            var photoUrl = res.User.PhotoUrl;
+            try
+            {
+                CheckForm(true);
+                var res = await ApplicationState.Provider.CreateUserWithEmailAndPasswordAsync(Email, Password, displayName: DisplayName);
+
+                User user = res.User;
+
+
+                ApplicationState applicationState = ApplicationState.Instance;
+                applicationState.LoggedInUser = new FirebaseUser(user.DisplayName, null, user.PhotoUrl);
+                IsLoggedIn = true;
+            } catch (Exception exc)
+            {
+                AppLogInException = exc.Message;
+            }
         }
         private async void LogIn(object sender, EventArgs e)
         {
-            var res = await provider.SignInWithEmailAndPasswordAsync(Email, Password);
-            var usrName = res.User.DisplayName;
-            var photoUrl = res.User.PhotoUrl;
+            try
+            {
+                CheckForm();
+                var res = await ApplicationState.Provider.SignInWithEmailAndPasswordAsync(Email, Password);
+                User user = res.User;
+
+
+                ApplicationState applicationState = ApplicationState.Instance;
+                applicationState.LoggedInUser = new FirebaseUser(user.DisplayName, null, user.PhotoUrl);
+                applicationState.LoggedInUser.UID = user.LocalId;
+                IsLoggedIn = true;
+            } catch (Exception exc)
+            {
+                AppLogInException = exc.Message;
+            }
+
+        }
+
+        private void CheckForm (bool checkDisplayName = false)
+        {
+            if (checkDisplayName)
+                if (string.IsNullOrWhiteSpace(DisplayName))
+                    throw new Exception("Please fill in user name");
+
+            if (string.IsNullOrWhiteSpace(Email))
+                throw new Exception("Please fill in email");
+
+            if (string.IsNullOrWhiteSpace(Password) && Password.Length < 6)
+                throw new Exception("Please fill in password. It's length must be bigger than 6");
         }
     }
 }

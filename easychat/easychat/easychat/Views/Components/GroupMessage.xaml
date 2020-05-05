@@ -26,8 +26,7 @@
         Grid.Column="1"
         Padding="20, 0, 0, 0"
         VerticalOptions="End"
-        Text="{Binding LinkedToUser.UserName}"/>
-    <Image Source="{Binding LinkedToUser.ProfilePictureUrl}"/>
+        Text="{Binding Message.UserName}"/>
     <AbsoluteLayout
         BindingContext="{Binding Source={x:Reference this}}"
         x:Name="MessageLayout"

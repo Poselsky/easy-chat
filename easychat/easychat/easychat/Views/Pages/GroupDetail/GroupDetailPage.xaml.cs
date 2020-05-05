@@ -1,6 +1,7 @@
 ﻿using easychat.Classes;
 using easychat.Model;
 using easychat.Views.Components;
+using Firebase.Auth;
 using Firebase.Database.Query;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,17 @@ namespace easychat.Views.Pages
             }
         }
 
+        private string _UserMessage;
+        public string UserMessage
+        {
+            get => _UserMessage;
+            set
+            {
+                _UserMessage = value;
+                OnPropertyChanged(nameof(UserMessage));
+            }
+        }
+
         public GroupDetailPage()
         {
             BindingContext = this;
@@ -36,7 +48,7 @@ namespace easychat.Views.Pages
 
         public void ListenToFirebaseGroupMessages()
         {
-            App.FirebaseClient.Child("messages").Child(GroupInfo.KeyPage).AsObservable<Message>().Subscribe(
+            ApplicationState.FirebaseClient.Child("messages").Child(GroupInfo.KeyPage).AsObservable<Message>().Subscribe(
                 (singleMessage) =>
                 {
                     if(singleMessage.Object != null)
@@ -46,14 +58,14 @@ namespace easychat.Views.Pages
                         singleGroupMessage.Message = singleMessage.Object;
                         singleGroupMessage.Message.MessageKey = singleMessage.Key;
 
-                        GroupMessage viewInChild;
-                        try
+                        GroupMessage viewInChild = null;
+                        for(int i = 0; i < allChildren.Count; i++)
                         {
-                            viewInChild = (GroupMessage)allChildren.First(view => ((GroupMessage)view).Message.MessageKey == singleMessage.Key);
-                        }
-                        catch (Exception e)
-                        {
-                            viewInChild = null;
+                            var temp = (GroupMessage)allChildren[i];
+                            if (temp.Message.MessageKey == singleMessage.Key)
+                            {
+                                viewInChild = temp;
+                            }
                         }
 
                         Dispatcher.BeginInvokeOnMainThread(() =>
@@ -74,6 +86,16 @@ namespace easychat.Views.Pages
                     }
                 }
            );
+        }
+
+        private async void Send_Event(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(UserMessage))
+            {
+                await ApplicationState.FirebaseClient.Child("messages").Child(GroupInfo.KeyPage).PostAsync(
+                    new Message(UserMessage, ApplicationState.Instance.LoggedInUser.UserName)
+                );
+            }
         }
     }
 }

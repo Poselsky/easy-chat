@@ -8,9 +8,34 @@
              x:Name="this">
     <ContentPage.Content>
         <StackLayout BindingContext="{Binding Source={x:Reference this}}">
-            <StackLayout x:Name="FetchedMessages">
-                
-            </StackLayout>
+            <ScrollView HeightRequest="600">
+                <StackLayout x:Name="FetchedMessages">
+
+                </StackLayout>
+            </ScrollView>
+            <Grid 
+                Padding="20"
+                VerticalOptions="EndAndExpand"
+                HeightRequest="40">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <StackLayout Padding="10"
+                    Grid.Column="0">
+                    <Entry
+                        VerticalOptions="FillAndExpand"
+                        HorizontalOptions="FillAndExpand"
+                        Text="{Binding UserMessage, Mode=TwoWay}"
+                        x:Name="Message"/>
+                </StackLayout>
+                <Button 
+                    WidthRequest="100"
+                    Grid.Column="1"
+                    Padding="10"
+                    Text="Send"
+                    Clicked="Send_Event"/>
+            </Grid>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
