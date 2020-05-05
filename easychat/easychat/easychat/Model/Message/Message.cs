@@ -9,27 +9,14 @@ namespace easychat.Model
         [JsonProperty("text")]
         public string Text { get; set; }
 
-        [JsonProperty("userID")]
-        public string UserID { get; set; }
+        [JsonProperty("userName")]
+        public string UserName { get; set; }
         public string MessageKey;
 
-        public Message(string Text,  string UserID)
-        {
-            this.Text = Text;
-            this.UserID = UserID;
-        }
-
-        public async Task<User> LinkedToUser()
-        {
-            return await User.GetUserByUid(this.UserID);
-        }
-        /*
-        public Message(string Text, string UserName, string MessageKey)
+        public Message(string Text,  string UserName)
         {
             this.Text = Text;
             this.UserName = UserName;
-            this.MessageKey = MessageKey;
         }
-        */
     }
 }

@@ -1,4 +1,5 @@
-﻿using Firebase.Database.Query;
+﻿using easychat.Classes;
+using Firebase.Database.Query;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace easychat.Model
 {
-    public class User
+    public class FirebaseUser
     {
         public string UserName { get; set; }
         public string Registered { get; set; }
@@ -21,17 +22,22 @@ namespace easychat.Model
             } 
         }
 
+        [JsonIgnore]
+        public string UID { get; set; }
+
         [JsonConstructor]
-        public User (string UserName, string Registered, string ProfilePictureUrl)
+        public FirebaseUser (string UserName, string Registered, string ProfilePictureUrl)
         {
             this.UserName = UserName;
             this.Registered = Registered;
             this.ProfilePictureUrl = ProfilePictureUrl;
         }
 
-        public static Task<User> GetUserByUid(string UID)
+        public static async Task<FirebaseUser> GetUserByUid(string UID)
         {
-            return App.FirebaseClient.Child("users").Child(UID).OnceSingleAsync<User>();
+            var user = await ApplicationState.FirebaseClient.Child("users").Child(UID).OnceSingleAsync<FirebaseUser>();
+            user.UID = UID;
+            return user;
         }
     }
 }
