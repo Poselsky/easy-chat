@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Firebase.Database;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -6,11 +7,14 @@ namespace easychat
 {
     public partial class App : Application
     {
+        public static MainMasterDetailPage MasterDetailPage { get; private set; }
         public App()
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            var main = new MainMasterDetailPage();
+            MainPage = main;
+            MasterDetailPage = main;
         }
 
         protected override void OnStart()
