@@ -7,21 +7,23 @@
              x:Class="easychat.Views.Pages.GroupDetailPage"
              x:Name="this">
     <ContentPage.Content>
-        <StackLayout BindingContext="{Binding Source={x:Reference this}}">
-            <ScrollView HeightRequest="600">
-                <StackLayout x:Name="FetchedMessages">
-
-                </StackLayout>
+        <Grid BindingContext="{Binding Source={x:Reference this}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+            <ScrollView Grid.Row="0">
+                <StackLayout x:Name="FetchedMessages"/>
             </ScrollView>
             <Grid 
-                Padding="20"
+                Grid.Row="1"
                 VerticalOptions="EndAndExpand"
                 HeightRequest="40">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="7*"/>
                     <ColumnDefinition Width="3*"/>
                 </Grid.ColumnDefinitions>
-                <StackLayout Padding="10"
+                <StackLayout
                     Grid.Column="0">
                     <Entry
                         VerticalOptions="FillAndExpand"
@@ -30,12 +32,10 @@
                         x:Name="Message"/>
                 </StackLayout>
                 <Button 
-                    WidthRequest="100"
                     Grid.Column="1"
-                    Padding="10"
                     Text="Send"
                     Clicked="Send_Event"/>
             </Grid>
-        </StackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
